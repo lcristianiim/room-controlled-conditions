@@ -70,11 +70,16 @@ private:
         return (dt >= startTimeWithHour && dt <= endTimeWithHour);
     }
 
-    friend void isNowAfterStart_GivenNowAfterStart_ShouldReturnTrue();
-    friend void isNowAfterStart_GivenNowBeforeStart_ShouldReturnFalse();
-    friend void isNowAfterStart_GivenNowSameTimeAsStart_ShouldReturnFalse();
-    friend void isInRunningInterval_GivenNowInsideRunningInterval_ShouldReturnTrue();
-    friend void isInRunningInterval_GivenNowOutsideTheRunningInterval_ShouldReturnFalse();
+    friend void givenNowAfterStartWithOneSecond_ShouldReturnTrue();
+    friend void givenNowAfterStartWithOneMinute_ShouldReturnTrue();
+    friend void givenNowAfterStartWithOneHour_ShouldReturnTrue();
+    friend void givenNowBeforeStart_ShouldReturnFalse();
+    friend void givenNowSameTimeAsStart_ShouldReturnFalse();
+    friend void givenNowInsideRunningInterval_ShouldReturnTrue();
+    friend void givenNowOutsideTheRunningInterval_ShouldReturnFalse();
+    friend void givenNowBeforeStartWithSeconds_ShouldReturnFalse();
+    friend void givenNowBeforeStartWithMinutes_ShouldReturnFalse();
+    friend void givenNowBeforeStartWithHours_ShouldReturnFalse();
 
 
 public:
