@@ -3,13 +3,13 @@
 
 #include <Arduino.h>
 #include "RTClib.h"
+#include <classes/StartTimeWithInterval.h>
 
-class ActionWithStartAndInterval {
 
-public:
-    ActionWithStartAndInterval() {
-    }
+class ActionWithStartAndInterval
+{
 
+private:
     bool isNowAfterStart(DateTime dateTime, int h, int m, int s)
     {
         DateTime specifiedTime(dateTime.year(), dateTime.month(), dateTime.day(), h, m, s);
@@ -17,38 +17,89 @@ public:
         return dateTime > specifiedTime;
     }
 
-    bool isInRunningInterval(DateTime dt, int h, int m, int s, int runningMinutes)
+    bool isInRunningInterval(DateTime dt, int h, int m, int s, int runningMinutes, TimeUnit timeUnit)
     {
-        DateTime startTime(dt.year(), dt.month(), dt.day(), h, m, s);
-        DateTime endTime = startTime + TimeSpan(0, 0, runningMinutes, 0);
+        switch (timeUnit)
+        {
+        case TimeUnit::h:
+            Serial.println("Handling as hour");
+            return handleHour(dt, h, m, s, runningMinutes);
+            break;
 
-        return (dt >= startTime && dt <= endTime);
+        case TimeUnit::m:
+            Serial.println("Handling as minute");
+            return handleMinutes(dt, h, m, s, runningMinutes);
+            break;
+
+        case TimeUnit::s:
+            Serial.println("Handling as seconds");
+            return handleSeconds(dt, h, m, s, runningMinutes);
+            break;
+
+        default:
+            break;
+            Serial.println("Handling as default");
+            return false;
+        }
+
+        Serial.println("Skipping switch and returning false");
+        return false;
     }
 
-    int evaluateForAction(DateTime now, int startHour, int startMinute, int startSecond, int minutesToRun, bool isOn)
+    bool handleSeconds(DateTime dt, int h, int m, int s, int runningMinutes)
     {
-        bool isAfter = isNowAfterStart(now, startHour, startMinute, startSecond);
+        DateTime startTimeWithSecond(dt.year(), dt.month(), dt.day(), h, m, s);
+        DateTime endTimeWithSecond = startTimeWithSecond + TimeSpan(0, 0, 0, runningMinutes);
+
+        return (dt >= startTimeWithSecond && dt <= endTimeWithSecond);
+    }
+
+    bool handleMinutes(DateTime dt, int h, int m, int s, int runningMinutes)
+    {
+        DateTime startTimeWithMinute(dt.year(), dt.month(), dt.day(), h, m, s);
+        DateTime endTimeWithMinute = startTimeWithMinute + TimeSpan(0, 0, runningMinutes, 0);
+
+        return (dt >= startTimeWithMinute && dt <= endTimeWithMinute);
+    }
+
+    bool handleHour(DateTime dt, int h, int m, int s, int runningMinutes)
+    {
+        DateTime startTimeWithHour(dt.year(), dt.month(), dt.day(), h, m, s);
+        DateTime endTimeWithHour = startTimeWithHour + TimeSpan(0, runningMinutes, 0, 0);
+
+        return (dt >= startTimeWithHour && dt <= endTimeWithHour);
+    }
+
+    friend void isNowAfterStart_GivenNowAfterStart_ShouldReturnTrue();
+    friend void isNowAfterStart_GivenNowBeforeStart_ShouldReturnFalse();
+    friend void isNowAfterStart_GivenNowSameTimeAsStart_ShouldReturnFalse();
+    friend void isInRunningInterval_GivenNowInsideRunningInterval_ShouldReturnTrue();
+    friend void isInRunningInterval_GivenNowOutsideTheRunningInterval_ShouldReturnFalse();
+
+
+public:
+    ActionWithStartAndInterval()
+    {
+    }
+
+    int evaluateForAction(DateTime now, StartTimeWithInterval startTimeWithInterval, bool isOn)
+    {
+        bool isAfter = isNowAfterStart(now, startTimeWithInterval.getHour(), startTimeWithInterval.getMinute(), startTimeWithInterval.getSecond());
         if (isAfter == true)
         {
-            bool isInRunningInterv = isInRunningInterval(now, startHour, startMinute, startSecond, minutesToRun);
-
-            Serial.println("Is in running inverval: " + String(isInRunningInterv ? "true" : "false"));
-            Serial.println("Is on: " + String(isOn ? "true" : "false"));
+            bool isInRunningInterv = isInRunningInterval(now, startTimeWithInterval.getHour(), startTimeWithInterval.getMinute(), startTimeWithInterval.getSecond(), startTimeWithInterval.getInterval(), startTimeWithInterval.getTimeUnit());
 
             if (isInRunningInterv == true && isOn == false)
             {
-                Serial.println("Evaluation: " + String(1));
                 return 1;
             }
 
             if (isInRunningInterv == false && isOn == true)
             {
-                Serial.println("Evaluation: " + String(0));
                 return 0;
             }
         }
 
-        Serial.println("Evaluation: " + String(3));
         return 3;
     };
 };

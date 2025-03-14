@@ -3,21 +3,17 @@
 
 #include <Arduino.h>
 #include <classes/ActionWithStartAndInterval.h>
-
-ActionWithStartAndInterval actionService;
+#include <classes/StartTimeWithInterval.h>
 
 class LIGHT {
 private:
     int pin;
-    int startHour = 21;
-    int startMinute = 3;
-    int startSecond = 0;
-    int minutesToRun = 1;
+    StartTimeWithInterval startTimeWithInterval;
+    ActionWithStartAndInterval actionService;
 
 public:
     // Constructor to initialize the LED pin
-    LIGHT(int p) {
-        pin = p;
+    LIGHT(int p) : pin(p), startTimeWithInterval(9, 7, 0, 5, TimeUnit::s), actionService() {
         pinMode(pin, OUTPUT); // Set the pin as an output
     }
 
@@ -43,7 +39,7 @@ public:
     }
 
     void evaluate(DateTime now) {
-        int action = actionService.evaluateForAction(now, startHour, startMinute, startSecond, minutesToRun, isRunning());
+        int action = actionService.evaluateForAction(now, startTimeWithInterval, isRunning());
         if (action == 1) {
             on();
         }

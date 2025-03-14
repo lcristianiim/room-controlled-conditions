@@ -6,12 +6,11 @@
 RTC_DS1307 rtc;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 LIGHT light(13);
-VENTILATOR ventilator(12);
 
 void setup()
 {
-
   Serial.begin(9600);
+
 #ifndef ESP8266
   while (!Serial)
     ; // wait for serial port to connect. Needed for native USB
@@ -50,11 +49,16 @@ void printCurrentTime(DateTime now)
   Serial.println();
 }
 
-void loop() {
+void generalFunction() {
   DateTime now = rtc.now();
   printCurrentTime(now);
 
   light.evaluate(now);
 
+  Serial.println("hello");
+}
+
+void loop() {
+  generalFunction();
   delay(1000);
 }

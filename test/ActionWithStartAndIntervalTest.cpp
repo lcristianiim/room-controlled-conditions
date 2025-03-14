@@ -2,6 +2,8 @@
 #include <unity.h>
 #include "RTClib.h"
 #include <../src/classes/ActionWithStartAndInterval.h>
+#include <../src/classes/StartTimeWithInterval.h>
+
 
 ActionWithStartAndInterval service;
 
@@ -11,6 +13,7 @@ void setUp(void) {
 
 void isNowAfterStart_GivenNowAfterStart_ShouldReturnTrue() {
     DateTime now(2025, 10, 5, 14, 30, 0);
+
     bool result = service.isNowAfterStart(now, 14, 29, 59);
 
     TEST_ASSERT_TRUE(result);
@@ -31,28 +34,41 @@ void isNowAfterStart_GivenNowSameTimeAsStart_ShouldReturnFalse() {
 
 void isInRunningInterval_GivenNowInsideRunningInterval_ShouldReturnTrue() {
     DateTime now(2025, 10, 5, 14, 30, 59);
-    bool result = service.isInRunningInterval(now, 14, 30, 0, 1);
+    bool result = service.isInRunningInterval(now, 14, 30, 0, 1, TimeUnit::m);
 
     TEST_ASSERT_TRUE(result);
 }
 
 void isInRunningInterval_GivenNowOutsideTheRunningInterval_ShouldReturnFalse() {
     DateTime now(2025, 10, 5, 14, 31, 1);
-    bool result = service.isInRunningInterval(now, 14, 30, 0, 1);
+    bool result = service.isInRunningInterval(now, 14, 30, 0, 1, TimeUnit::m);
 
     TEST_ASSERT_FALSE(result);
 }
 
 void evaluateForAction_GivenProperIntervalAndDeviceOff_ShouldReturn1ToTurnItOn() {
     DateTime now(2025, 10, 5, 14, 30, 25);
-    int result = service.evaluateForAction(now, 14, 30, 0, 1, false);
+    Serial.println("Got here");
+    StartTimeWithInterval startTimeWithInterval(14, 30, 0, 1, TimeUnit::m);
+    int result = service.evaluateForAction(now, startTimeWithInterval, false);
 
     TEST_ASSERT_EQUAL(1, result);
 }
 
 void givenNowOutsideIntervalAndDeviceOn_ShouldReturn0ToTurnItOff() {
     DateTime now(2025, 10, 5, 14, 31, 1);
-    int result = service.evaluateForAction(now, 14, 30, 0, 1, true);
+    StartTimeWithInterval startTimeWithInterval(14, 30, 0, 1, TimeUnit::m);
+
+    int result = service.evaluateForAction(now, startTimeWithInterval, true);
+
+    TEST_ASSERT_EQUAL(0, result);
+}
+
+void givenNowOutsideIntervalAndDeviceOn_ShouldReturn0ToTurnItOfff() {
+    DateTime now(2025, 3, 12, 22, 56, 1);
+    StartTimeWithInterval startTimeWithInterval(22, 55, 0, 1, TimeUnit::m);
+
+    int result = service.evaluateForAction(now, startTimeWithInterval, true);
 
     TEST_ASSERT_EQUAL(0, result);
 }
