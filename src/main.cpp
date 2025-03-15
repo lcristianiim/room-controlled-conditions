@@ -2,33 +2,17 @@
 #include "RTClib.h"
 #include <classes/Ventilator.h>
 #include <classes/Light.h>
+#include "RTCManager/RTCManager.h"
 
-RTC_DS1307 rtc;
+RTCManager rtcManager;
+
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 Light light(13, 22, 40, 30, 10, TimeUnit::s);
 
 void setup()
 {
   Serial.begin(9600);
-
-#ifndef ESP8266
-  while (!Serial)
-    ; // wait for serial port to connect. Needed for native USB
-#endif
-
-  if (!rtc.begin())
-  {
-    Serial.println("Couldn't find RTC");
-    Serial.flush();
-    while (1)
-      delay(10);
-  }
-
-  if (!rtc.isrunning())
-  {
-    Serial.println("RTC is NOT running, let's set the time!");
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  }
+  rtcManager.begin();
 }
 
 void printCurrentTime(DateTime now)
@@ -50,7 +34,7 @@ void printCurrentTime(DateTime now)
 }
 
 void generalFunction() {
-  DateTime now = rtc.now();
+  DateTime now = rtcManager.getCurrentTime();
   printCurrentTime(now);
 
   light.evaluate(now);
