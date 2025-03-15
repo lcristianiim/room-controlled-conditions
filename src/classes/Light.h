@@ -2,18 +2,18 @@
 #define LIGHT_H
 
 #include <Arduino.h>
-#include <classes/ActionWithStartAndInterval.h>
+#include <classes/OnceADayActionWithStartTimeAndInterval.h>
 #include <classes/StartTimeWithInterval.h>
 
-class LIGHT {
+class Light {
 private:
     int pin;
     StartTimeWithInterval startTimeWithInterval;
-    ActionWithStartAndInterval actionService;
+    OnceADayActionWithStartTimeAndInterval actionService;
 
 public:
     // Constructor to initialize the LED pin
-    LIGHT(int p) : pin(p), startTimeWithInterval(9, 7, 0, 5, TimeUnit::s), actionService() {
+    Light(int p, int hour, int minute, int second, int interval, TimeUnit unit) : pin(p), startTimeWithInterval(hour, minute, second, interval, TimeUnit::s), actionService() {
         pinMode(pin, OUTPUT); // Set the pin as an output
     }
 

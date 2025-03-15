@@ -5,7 +5,7 @@
 
 RTC_DS1307 rtc;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-LIGHT light(13);
+Light light(13, 22, 40, 30, 10, TimeUnit::s);
 
 void setup()
 {
@@ -54,8 +54,6 @@ void generalFunction() {
   printCurrentTime(now);
 
   light.evaluate(now);
-
-  Serial.println("hello");
 }
 
 void loop() {

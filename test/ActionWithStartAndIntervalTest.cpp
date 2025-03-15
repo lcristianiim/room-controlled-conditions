@@ -1,11 +1,11 @@
 #include <Arduino.h>
 #include <unity.h>
 #include "RTClib.h"
-#include <../src/classes/ActionWithStartAndInterval.h>
+#include <../src/classes/OnceADayActionWithStartTimeAndInterval.h>
 #include <../src/classes/StartTimeWithInterval.h>
 
 
-ActionWithStartAndInterval service;
+OnceADayActionWithStartTimeAndInterval service;
 
 void setUp(void) {
     // set stuff up here

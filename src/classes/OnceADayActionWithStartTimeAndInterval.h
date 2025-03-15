@@ -6,7 +6,7 @@
 #include <classes/StartTimeWithInterval.h>
 
 
-class ActionWithStartAndInterval
+class OnceADayActionWithStartTimeAndInterval
 {
 
 private:
@@ -17,23 +17,20 @@ private:
         return dateTime > specifiedTime;
     }
 
-    bool isInRunningInterval(DateTime dt, int h, int m, int s, int runningMinutes, TimeUnit timeUnit)
+    bool isInRunningInterval(DateTime dt, int h, int m, int s, int interval, TimeUnit timeUnit)
     {
         switch (timeUnit)
         {
         case TimeUnit::h:
-            Serial.println("Handling as hour");
-            return handleHour(dt, h, m, s, runningMinutes);
+            return handleHour(dt, h, m, s, interval);
             break;
 
         case TimeUnit::m:
-            Serial.println("Handling as minute");
-            return handleMinutes(dt, h, m, s, runningMinutes);
+            return handleMinutes(dt, h, m, s, interval);
             break;
 
         case TimeUnit::s:
-            Serial.println("Handling as seconds");
-            return handleSeconds(dt, h, m, s, runningMinutes);
+            return handleSeconds(dt, h, m, s, interval);
             break;
 
         default:
@@ -83,7 +80,7 @@ private:
 
 
 public:
-    ActionWithStartAndInterval()
+    OnceADayActionWithStartTimeAndInterval()
     {
     }
 

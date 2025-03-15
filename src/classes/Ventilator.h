@@ -2,17 +2,17 @@
 #define VENTILATOR_H
 
 #include <Arduino.h>
-#include <classes/ActionWithStartAndInterval.h>
+#include <classes/OnceADayActionWithStartTimeAndInterval.h>
 #include <classes/StartTimeWithInterval.h>
 
-class VENTILATOR {
+class Ventilator {
 private:
     int pin;
     StartTimeWithInterval startTimeWithInterval;
-    ActionWithStartAndInterval actionService;
+    OnceADayActionWithStartTimeAndInterval actionService;
 
 public:
-    VENTILATOR(int p) : pin(p), startTimeWithInterval(21, 3, 0, 1, TimeUnit::m), actionService() {
+    Ventilator(int p) : pin(p), startTimeWithInterval(21, 3, 0, 1, TimeUnit::m), actionService() {
         pinMode(pin, OUTPUT); // Set the pin as an output
     }
 
