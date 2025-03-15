@@ -1,7 +1,7 @@
 #ifndef START_TIME_WITH_INTERVAL_H
 #define START_TIME_WITH_INTERVAL_H
 
-#include <classes/TimeUnit.h>
+#include <../lib/OnceADayActionWithStartAndInterval/src/TimeUnit.h>
 
 class StartTimeWithInterval {
     private:

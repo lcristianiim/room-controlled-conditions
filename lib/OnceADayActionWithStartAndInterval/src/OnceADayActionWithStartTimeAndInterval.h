@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include "RTClib.h"
-#include <classes/StartTimeWithInterval.h>
+#include "StartTimeWithInterval.h"
 
 
 class OnceADayActionWithStartTimeAndInterval

@@ -1,9 +1,8 @@
 #include <Arduino.h>
 #include <unity.h>
 #include "RTClib.h"
-#include <../src/classes/OnceADayActionWithStartTimeAndInterval.h>
-#include <../src/classes/StartTimeWithInterval.h>
-
+#include "OnceADayActionWithStartTimeAndInterval.h"
+#include "StartTimeWithInterval.h"
 
 OnceADayActionWithStartTimeAndInterval service;
 

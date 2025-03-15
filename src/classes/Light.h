@@ -2,8 +2,8 @@
 #define LIGHT_H
 
 #include <Arduino.h>
-#include <classes/OnceADayActionWithStartTimeAndInterval.h>
-#include <classes/StartTimeWithInterval.h>
+#include "OnceADayActionWithStartTimeAndInterval.h"
+#include "StartTimeWithInterval.h"
 
 class Light {
 private:
