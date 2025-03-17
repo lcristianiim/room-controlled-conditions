@@ -4,9 +4,7 @@
 #include <Arduino.h>
 #include "RepeatableStartAndStopAction.h"
 #include "StartAndStopDurations.h"
-#include "RTClib.h"
-
-RTC_DS1307 rtc;
+#include "RTCManager/GlobalRTCManager.h" 
 
 class Ventilator {
 private:
@@ -24,13 +22,13 @@ public:
     // Method to turn the LED on
     void on() {
         digitalWrite(pin, HIGH);
-        timeOn = rtc.now();
+        timeOn = rtcManager.getCurrentTime();
     }
 
     // Method to turn the LED off
     void off() {
         digitalWrite(pin, LOW);
-        timeOff = rtc.now();
+        timeOff = rtcManager.getCurrentTime();
     }
 
     bool isRunning() {
@@ -45,7 +43,26 @@ public:
     }
 
     void evaluate(DateTime now) {
+        if (timeOn.timestamp() == "2000-01-01T00:00:00") {
+            Serial.println("FIRST INITIALIZATION");
+            timeOff = now;
+            on();
+        }
+        
+        Serial.println("Evaluation triggered with:");
+        Serial.print("now: "); Serial.print(now.timestamp());
+        Serial.println();
+        Serial.print("timeOn: "); Serial.print(timeOn.timestamp());
+        Serial.println();
+        Serial.print("timeOff: "); Serial.print(timeOff.timestamp());
+        Serial.println();
+        Serial.print("isRunning() "); Serial.print(isRunning());
+
         int action = acService.evaluateForAction(now, timeOn, timeOff, startAndStopDurations, isRunning());
+        Serial.println();
+        Serial.print("Action is: ");
+        Serial.print(String(action));
+
         if (action == 1) {
             on();
         }
