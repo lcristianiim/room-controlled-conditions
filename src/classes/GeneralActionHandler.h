@@ -4,16 +4,14 @@
 class GeneralActionHandler
 {
 private:
-    int maxTemperature;
 public:
-    GeneralActionHandler(int maxTemperature)
+    GeneralActionHandler()
     {
-        this->maxTemperature = maxTemperature;
     }
 
     // the 'day' term reffers to when the chickens need light
     // the 'night' term reffers to when the chickens need dark
-    int evaluate(bool isDay, float temperature)
+    int evaluateLights(bool isDay, float temperature)
     {
         if (isDay && temperature < 30) {
             // evaluate red light
@@ -27,6 +25,34 @@ public:
 
         return true;
     };
+
+    int evaluateHeater(float temperature, bool isDay, float targetTemp, bool isOn) {
+        if (isDay && isOn) {
+            return 0;
+        }
+
+        if (isDay && !isOn) {
+            return 3;
+        }
+
+        if (!isDay && (temperature < targetTemp) && !isOn) {
+            return 1;
+        }
+
+        if (!isDay && (temperature < targetTemp) && isOn) {
+            return 3;
+        }
+
+        if (!isDay && (temperature > targetTemp) && !isOn) {
+            return 3;
+        }
+
+        if (!isDay && (temperature > targetTemp) && isOn) {
+            return 0;
+        }
+
+        return 0;
+    }
 };
 
 #endif

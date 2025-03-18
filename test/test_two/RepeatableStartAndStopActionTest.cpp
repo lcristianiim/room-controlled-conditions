@@ -82,7 +82,6 @@ void a() {
 
 void setup()
 {
-    // delay(1000);
     UNITY_BEGIN();
 
     RUN_TEST(givenTimeOnInIntervalAndIsOnFalse_ShouldReturnOne);

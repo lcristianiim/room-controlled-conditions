@@ -22,6 +22,7 @@ TimeUnit ventilatorRunForTimeUnit = TimeUnit::m;
 int ventilatorStopFor = 1;
 TimeUnit ventilatorStopForTimeUnit = TimeUnit::m;
 
+// Define what a day is. 'Day' is when light is required. 'Night' is when dark is required.
 int maxTemperature = 31; // in celsius
 int dayStartHour = 22;
 int dayStartMinute = 40;
@@ -32,9 +33,8 @@ TimeUnit dayIntervalTimeUnit = TimeUnit::h;
 Light redLight(redLightPin, dayStartHour, dayStartMinute, dayStartSecond, dayInterval, dayIntervalTimeUnit);
 Light yellowLight(yellowLightPin, dayStartHour, dayStartMinute, dayStartSecond, dayInterval, dayIntervalTimeUnit);
 Ventilator ventilator(ventilatorPin, ventilatorRunFor, ventilatorRunForTimeUnit, ventilatorStopFor, ventilatorStopForTimeUnit);
-GeneralActionHandler generalActionHandler(maxTemperature);
 
-RepeatableStartAndStopAction action;
+GeneralActionHandler actionHandler;
 
 void setup()
 {
@@ -66,8 +66,13 @@ void generalFunction() {
   DateTime now = rtcManager.getCurrentTime();
   printCurrentTime(now);
 
+
+  // TODO
+  // actionHandler.evaluateLights();
+
+
   // light.evaluate(now);
-  ventilator.evaluate(now);
+  // ventilator.evaluate(now);
 
   sensors.requestTemperatures();
 
@@ -82,19 +87,9 @@ void generalFunction() {
   Serial.println("""");
 }
 
-int a(bool day, float temp) {
-  return generalActionHandler.evaluate(true, temp);
-}
 
 void loop() {
   // generalFunction();
-
-  sensors.requestTemperatures();
-  float temp = sensors.getTempCByIndex(0);
-
-
-  Serial.println("Result");
-  Serial.println(String(a(true, temp)));
 
   delay(1000);
 }
