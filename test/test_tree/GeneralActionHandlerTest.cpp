@@ -64,6 +64,52 @@ void givenNotTimeAndTempAboveTargetAndHeaterOn_ShouldStopHeater() {
     TEST_ASSERT_EQUAL(0, result);
 }
 
+void givenNowInDayInterval_ShouldReturnTrue() {
+
+    bool result1 = service.isDay(DateTime(2025, 10, 5, 7, 0, 0), 6, 0, 0, 1, TimeUnit::h);
+    bool result2 = service.isDay(DateTime(2025, 10, 5, 6, 1, 0), 6, 0, 0, 1, TimeUnit::m);
+    bool result3 = service.isDay(DateTime(2025, 10, 5, 6, 0, 1), 6, 0, 0, 1, TimeUnit::s);
+    bool result4 = service.isDay(DateTime(2025, 10, 5, 6, 59, 59), 6, 0, 0, 1, TimeUnit::h);
+    bool result5 = service.isDay(DateTime(2025, 10, 5, 6, 0, 59), 6, 0, 0, 1, TimeUnit::m);
+    bool result6 = service.isDay(DateTime(2025, 10, 5, 6, 0, 0), 6, 0, 0, 1, TimeUnit::h);
+    bool result7 = service.isDay(DateTime(2025, 10, 5, 6, 0, 0), 6, 0, 0, 1, TimeUnit::m);
+    bool result8 = service.isDay(DateTime(2025, 10, 5, 6, 0, 0), 6, 0, 0, 1, TimeUnit::s);
+
+    TEST_ASSERT_TRUE(result1);
+    TEST_ASSERT_TRUE(result2);
+    TEST_ASSERT_TRUE(result3);
+    TEST_ASSERT_TRUE(result4);
+    TEST_ASSERT_TRUE(result5);
+    TEST_ASSERT_TRUE(result6);
+    TEST_ASSERT_TRUE(result7);
+    TEST_ASSERT_TRUE(result8);
+
+}
+
+void givenNowNotInDayInterval_ShouldReturnFalse() {
+
+    bool result1 = service.isDay(DateTime(2025, 10, 5, 5, 1, 0), 6, 0, 0, 1, TimeUnit::h);
+    bool result2 = service.isDay(DateTime(2025, 10, 5, 5, 1, 0), 6, 0, 0, 1, TimeUnit::m);
+    bool result3 = service.isDay(DateTime(2025, 10, 5, 5, 1, 0), 6, 0, 0, 1, TimeUnit::s);
+
+    bool result5 = service.isDay(DateTime(2025, 10, 5, 7, 0, 1), 6, 0, 0, 1, TimeUnit::h);
+    bool result6 = service.isDay(DateTime(2025, 10, 5, 6, 1, 1), 6, 0, 0, 1, TimeUnit::m);
+    bool result7 = service.isDay(DateTime(2025, 10, 5, 5, 59, 59), 6, 0, 0, 1, TimeUnit::s);
+
+    bool result8 = service.isDay(DateTime(2025, 10, 5, 6, 2, 1), 6, 0, 0, 1, TimeUnit::m);
+    bool result9 = service.isDay(DateTime(2025, 10, 5, 6, 0, 2), 6, 0, 0, 1, TimeUnit::s);
+
+    TEST_ASSERT_FALSE(result1);
+    TEST_ASSERT_FALSE(result2);
+    TEST_ASSERT_FALSE(result3);
+    TEST_ASSERT_FALSE(result5);
+    TEST_ASSERT_FALSE(result6);
+    TEST_ASSERT_FALSE(result7);
+    TEST_ASSERT_FALSE(result8);
+    TEST_ASSERT_FALSE(result9);
+
+}
+
 void setup()
 {
     UNITY_BEGIN();
@@ -77,6 +123,8 @@ void setup()
     RUN_TEST(givenNotTimeAndTempAboveTargetAndHeaterOn_ShouldStopHeater);
     RUN_TEST(givenNotDayTimeAndTempBellowTargetAndHeaterOff_ShouldDoNothing);
     RUN_TEST(givenDayTimeAndWhateverTemperatureAndHeaterOff_ShouldDoNothing);
+    RUN_TEST(givenNowInDayInterval_ShouldReturnTrue);
+    RUN_TEST(givenNowNotInDayInterval_ShouldReturnFalse);
 
 
     UNITY_END(); // stop unit testing

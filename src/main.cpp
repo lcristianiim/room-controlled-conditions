@@ -2,6 +2,7 @@
 #include "RTClib.h"
 #include <classes/Ventilator.h>
 #include <classes/Light.h>
+#include <classes/Heater.h>
 #include <classes/GeneralActionHandler.h>
 #include "RTCManager/GlobalRTCManager.h" 
 
@@ -16,6 +17,7 @@ char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursd
 int redLightPin = 13;
 int yellowLightPin = 12;
 int ventilatorPin = 8;
+int heaterPin = 7;
 
 int ventilatorRunFor = 1;
 TimeUnit ventilatorRunForTimeUnit = TimeUnit::m;
@@ -33,6 +35,7 @@ TimeUnit dayIntervalTimeUnit = TimeUnit::h;
 Light redLight(redLightPin, dayStartHour, dayStartMinute, dayStartSecond, dayInterval, dayIntervalTimeUnit);
 Light yellowLight(yellowLightPin, dayStartHour, dayStartMinute, dayStartSecond, dayInterval, dayIntervalTimeUnit);
 Ventilator ventilator(ventilatorPin, ventilatorRunFor, ventilatorRunForTimeUnit, ventilatorStopFor, ventilatorStopForTimeUnit);
+Heater heater(heaterPin, 30);
 
 GeneralActionHandler actionHandler;
 
@@ -61,35 +64,55 @@ void printCurrentTime(DateTime now)
   Serial.println();
 }
 
-void generalFunction() {
-  Serial.println("@@@ ===== start");
-  DateTime now = rtcManager.getCurrentTime();
-  printCurrentTime(now);
-
-
-  // TODO
-  // actionHandler.evaluateLights();
-
-
-  // light.evaluate(now);
-  // ventilator.evaluate(now);
-
+float getTemperature() {
   sensors.requestTemperatures();
+  return sensors.getTempCByIndex(0);
+}
 
-  float temp = sensors.getTempCByIndex(0);
-  Serial.println();
-  Serial.print("Temperature: ");
-  Serial.print(temp);
-  Serial.println("°C");
+void generalFunction() {
+  DateTime now = rtcManager.getCurrentTime();
+  // printCurrentTime(now);
+  
+  
+  float temp = getTemperature();
+  bool isDay = actionHandler.isDay(now, dayStartHour, dayStartMinute, dayStartSecond, dayInterval, dayIntervalTimeUnit);
 
-  Serial.println();
-  Serial.println("@@@ ===== end");
-  Serial.println("""");
+  if (isDay) {
+
+    // if heater is on, then turn it off, because it's day time
+    if (heater.isOn()) {
+      heater.off();
+    }
+
+    if (temp < 30) {
+      redLight.evaluate(now);
+      if (yellowLight.isRunning()) {
+        yellowLight.off();
+      }
+    } else {
+      yellowLight.evaluate(now);
+      if (redLight.isRunning()) {
+        redLight.off();
+      }
+    }
+  } else {
+    // if red light is on, then turn if off because it's night time
+    if (redLight.isRunning()) {
+      redLight.off();
+    }
+
+    if (temp < 30) {
+      heater.evaluate(temp, isDay);
+      if (redLight.isRunning()) {
+        redLight.off();
+      }
+    }
+  }
 }
 
 
 void loop() {
-  // generalFunction();
+  generalFunction();
 
   delay(1000);
 }

@@ -53,6 +53,28 @@ public:
 
         return 0;
     }
+
+    bool isDay(DateTime now, int dayStartHour, int dayStartMinute, int dayStartSecond, int dayInterval, TimeUnit unit)
+    {
+
+        DateTime start(now.year(), now.month(), now.day(), dayStartHour, dayStartMinute, dayStartSecond);
+        DateTime end;
+
+        if (unit == TimeUnit::h) {
+            end = (start + TimeSpan(0, dayInterval, 0, 0));
+        }
+
+        if (unit == TimeUnit::m) {
+            end = (start + TimeSpan(0, 0, dayInterval, 0));
+        }
+
+        if (unit == TimeUnit::s) {
+            end = (start + TimeSpan(0, 0, 0, dayInterval));
+        }
+
+
+        return (now <= end) && (now >= start);
+    };
 };
 
 #endif

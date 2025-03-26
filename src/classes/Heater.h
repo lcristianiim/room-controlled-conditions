@@ -38,8 +38,15 @@ public:
         }
     }
 
-    void evaluate(float temperature, bool isDay, bool isOn()) {
-        generalActionHandler.evaluateHeater(temperature, isDay, targetTemp, isOn());
+    void evaluate(float temperature, bool isDay) {
+        int result = generalActionHandler.evaluateHeater(temperature, isDay, targetTemp, isOn());
+        if (result == 1) {
+            on();
+        }
+
+        if (result == 0) {
+            off();
+        }
     }
 };
 
