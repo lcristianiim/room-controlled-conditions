@@ -47,8 +47,10 @@ void setup()
   sensors.begin();
   delay(2000);
 
+  // for some reason this works only from the arduino ide. Check the example
+  // from RTClib -> DS1307
   // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  // rtc.adjust(DateTime(2025, 1, 21, 12, 47, 0));
+  // rtc.adjust(DateTime(2025, 1, 27, 18, 38, 0));
 
   pinMode(ventilatorPin, OUTPUT);
   pinMode(redLightPin, OUTPUT);
