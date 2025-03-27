@@ -58,23 +58,65 @@ public:
     {
 
         DateTime start(now.year(), now.month(), now.day(), dayStartHour, dayStartMinute, dayStartSecond);
-        DateTime end;
+        DateTime end = start;
 
         if (unit == TimeUnit::h) {
+            Serial.println("Timeunit is hour");
             end = (start + TimeSpan(0, dayInterval, 0, 0));
+            printDates(now, start, end);
+            return (now <= end) && (now >= start);
         }
 
-        if (unit == TimeUnit::m) {
+        if (unit == TimeUnit::m)
+        {
+            Serial.println("Timeunit is minute");
             end = (start + TimeSpan(0, 0, dayInterval, 0));
+            printDates(now, start, end);
+            return (now <= end) && (now >= start);
         }
 
-        if (unit == TimeUnit::s) {
+        if (unit == TimeUnit::s)
+        {
+            Serial.println("Timeunit is second");
             end = (start + TimeSpan(0, 0, 0, dayInterval));
+            printDates(now, start, end);
+            return (now <= end) && (now >= start);
         }
-
 
         return (now <= end) && (now >= start);
     };
+
+    void printDates(DateTime now, DateTime start, DateTime end) {
+
+        Serial.println("Now");
+        printCurrentTime(now);
+
+        Serial.println("Start");
+        printCurrentTime(start);
+
+        Serial.println("End");
+        printCurrentTime(end);
+    }
+
+    char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+    void printCurrentTime(DateTime now)
+    {
+        Serial.print(now.year(), DEC);
+        Serial.print('/');
+        Serial.print(now.month(), DEC);
+        Serial.print('/');
+        Serial.print(now.day(), DEC);
+        Serial.print(" (");
+        Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
+        Serial.print(") ");
+        Serial.print(now.hour(), DEC);
+        Serial.print(':');
+        Serial.print(now.minute(), DEC);
+        Serial.print(':');
+        Serial.print(now.second(), DEC);
+        Serial.println();
+    }
 };
 
 #endif

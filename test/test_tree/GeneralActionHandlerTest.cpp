@@ -64,6 +64,13 @@ void givenNotTimeAndTempAboveTargetAndHeaterOn_ShouldStopHeater() {
     TEST_ASSERT_EQUAL(0, result);
 }
 
+
+
+void a() {
+    bool result1 = service.isDay(DateTime(2025, 27, 9, 9, 5, 0), 6, 0, 0, 18, TimeUnit::h);
+    TEST_ASSERT_TRUE(result1);
+}
+
 void givenNowInDayInterval_ShouldReturnTrue() {
 
     bool result1 = service.isDay(DateTime(2025, 10, 5, 7, 0, 0), 6, 0, 0, 1, TimeUnit::h);
@@ -125,6 +132,7 @@ void setup()
     RUN_TEST(givenDayTimeAndWhateverTemperatureAndHeaterOff_ShouldDoNothing);
     RUN_TEST(givenNowInDayInterval_ShouldReturnTrue);
     RUN_TEST(givenNowNotInDayInterval_ShouldReturnFalse);
+    RUN_TEST(a);
 
 
     UNITY_END(); // stop unit testing

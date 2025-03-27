@@ -16,22 +16,22 @@ private:
 
 public:
     Heater(int p, float targetTemp) : generalActionHandler() {
-        pinMode(pin, OUTPUT);
+        // pinMode(pin, OUTPUT);
     }
 
     void on() {
-        digitalWrite(pin, HIGH);
+        digitalWrite(pin, LOW);
     }
 
     void off() {
-        digitalWrite(pin, LOW);
+        digitalWrite(pin, HIGH);
     }
 
     bool isOn() {
         int buttonState = digitalRead(pin);
 
         // Check if the button is pressed (HIGH)
-        if (buttonState == HIGH) {
+        if (buttonState == 0) {
           return true;
         } else {
           return false;
