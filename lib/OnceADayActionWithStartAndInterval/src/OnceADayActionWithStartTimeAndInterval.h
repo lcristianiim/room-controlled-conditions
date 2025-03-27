@@ -43,26 +43,28 @@ private:
         return false;
     }
 
-    bool handleSeconds(DateTime dt, int h, int m, int s, int runningMinutes)
+    bool handleSeconds(DateTime dt, int h, int m, int s, int runningSeconds)
     {
+        Serial.println("got here seconds");
         DateTime startTimeWithSecond(dt.year(), dt.month(), dt.day(), h, m, s);
-        DateTime endTimeWithSecond = startTimeWithSecond + TimeSpan(0, 0, 0, runningMinutes);
+        DateTime endTimeWithSecond = startTimeWithSecond + TimeSpan(0, 0, 0, runningSeconds);
 
         return (dt >= startTimeWithSecond && dt <= endTimeWithSecond);
     }
 
     bool handleMinutes(DateTime dt, int h, int m, int s, int runningMinutes)
     {
+        Serial.println("got here minutes");
         DateTime startTimeWithMinute(dt.year(), dt.month(), dt.day(), h, m, s);
         DateTime endTimeWithMinute = startTimeWithMinute + TimeSpan(0, 0, runningMinutes, 0);
 
         return (dt >= startTimeWithMinute && dt <= endTimeWithMinute);
     }
 
-    bool handleHour(DateTime dt, int h, int m, int s, int runningMinutes)
+    bool handleHour(DateTime dt, int h, int m, int s, int runningHours)
     {
         DateTime startTimeWithHour(dt.year(), dt.month(), dt.day(), h, m, s);
-        DateTime endTimeWithHour = startTimeWithHour + TimeSpan(0, runningMinutes, 0, 0);
+        DateTime endTimeWithHour = startTimeWithHour + TimeSpan(0, runningHours, 0, 0);
 
         return (dt >= startTimeWithHour && dt <= endTimeWithHour);
     }

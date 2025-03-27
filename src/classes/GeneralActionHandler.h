@@ -27,6 +27,7 @@ public:
     };
 
     int evaluateHeater(float temperature, bool isDay, float targetTemp, bool isOn) {
+
         if (isDay && isOn) {
             return 0;
         }
@@ -61,25 +62,19 @@ public:
         DateTime end = start;
 
         if (unit == TimeUnit::h) {
-            Serial.println("Timeunit is hour");
             end = (start + TimeSpan(0, dayInterval, 0, 0));
-            printDates(now, start, end);
             return (now <= end) && (now >= start);
         }
 
         if (unit == TimeUnit::m)
         {
-            Serial.println("Timeunit is minute");
             end = (start + TimeSpan(0, 0, dayInterval, 0));
-            printDates(now, start, end);
             return (now <= end) && (now >= start);
         }
 
         if (unit == TimeUnit::s)
         {
-            Serial.println("Timeunit is second");
             end = (start + TimeSpan(0, 0, 0, dayInterval));
-            printDates(now, start, end);
             return (now <= end) && (now >= start);
         }
 
@@ -87,7 +82,6 @@ public:
     };
 
     void printDates(DateTime now, DateTime start, DateTime end) {
-
         Serial.println("Now");
         printCurrentTime(now);
 

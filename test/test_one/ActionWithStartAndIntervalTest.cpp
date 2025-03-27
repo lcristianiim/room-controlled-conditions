@@ -78,7 +78,6 @@ void givenNowOutsideTheRunningInterval_ShouldReturnFalse() {
 
 void givenProperIntervalAndDeviceOff_ShouldReturn1ToTurnItOn() {
     DateTime now(2025, 10, 5, 14, 30, 25);
-    Serial.println("Got here");
     StartTimeWithInterval startTimeWithInterval(14, 30, 0, 1, TimeUnit::m);
     int result = service.evaluateForAction(now, startTimeWithInterval, false);
 

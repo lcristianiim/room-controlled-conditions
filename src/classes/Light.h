@@ -13,8 +13,7 @@ private:
 
 public:
     // Constructor to initialize the LED pin
-    Light(int p, int hour, int minute, int second, int interval, TimeUnit unit) : pin(p), startTimeWithInterval(hour, minute, second, interval, TimeUnit::s), actionService() {
-        pinMode(pin, OUTPUT); 
+    Light(int p, int hour, int minute, int second, int interval, TimeUnit unit) : pin(p), startTimeWithInterval(hour, minute, second, interval, unit), actionService() {
     }
 
     // Method to turn the LED on
@@ -28,10 +27,10 @@ public:
     }
 
     bool isRunning() {
-        int buttonState = digitalRead(pin);
+        int pinState = digitalRead(pin);
 
         // Check if the button is pressed (HIGH)
-        if (buttonState == 0) {
+        if (pinState == 0) {
           return true;
         } else {
           return false;

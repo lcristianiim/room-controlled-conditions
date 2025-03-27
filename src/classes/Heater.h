@@ -16,11 +16,12 @@ private:
 
 public:
     Heater(int p, float targetTemp) : generalActionHandler() {
-        // pinMode(pin, OUTPUT);
+        this->pin = p;
+        this->targetTemp = targetTemp;
     }
 
     void on() {
-        digitalWrite(pin, LOW);
+        digitalWrite(7, LOW);
     }
 
     void off() {
@@ -40,6 +41,7 @@ public:
 
     void evaluate(float temperature, bool isDay) {
         int result = generalActionHandler.evaluateHeater(temperature, isDay, targetTemp, isOn());
+
         if (result == 1) {
             on();
         }
