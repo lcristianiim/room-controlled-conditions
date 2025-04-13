@@ -11,7 +11,7 @@
 #define ONE_WIRE_BUS 2
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
-RTC_DS1307 rtc;
+RTC_DS3231 rtc;
 
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -41,16 +41,38 @@ Heater heater(heaterPin, maxTemperature);
 GeneralActionHandler actionHandler;
 
 void setup()
+
 {
+
+#ifndef ESP8266
+  while (!Serial)
+    ; // wait for serial port to connect. Needed for native USB
+#endif
+
+  if (!rtc.begin())
+  {
+    Serial.println("Couldn't find RTC");
+    Serial.flush();
+    while (1)
+      delay(10);
+  }
+
   Serial.begin(9600);
   rtcManager.begin();
   sensors.begin();
-  delay(2000);
+  delay(1000);
+
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+
+#ifndef ESP8266
+  while (!Serial)
+    ; // wait for serial port to connect. Needed for native USB
+#endif
 
   // for some reason this works only from the arduino ide. Check the example
   // from RTClib -> DS1307
   // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  // rtc.adjust(DateTime(2025, 1, 27, 18, 38, 0));
+  // rtc.adjust(DateTime(2025, 4, 5, 23, 37, 0));
 
   pinMode(ventilatorPin, OUTPUT);
   pinMode(redLightPin, OUTPUT);
@@ -95,25 +117,8 @@ void generalFunction() {
   float temp = getTemperature();
   bool isDay = actionHandler.isDay(now, dayStartHour, dayStartMinute, dayStartSecond, dayInterval, dayIntervalTimeUnit);
 
-  // Serial.println("======");
-  // Serial.println("isDay");
-  // Serial.println(isDay ? "on" : "off");
-  // Serial.println("======");
   Serial.println("Temperature");
   Serial.println(String(temp));
-  // Serial.println("======");
-  // Serial.println("Red light");
-  // Serial.println(redLight.isRunning() ? "on" : "off");
-  // Serial.println("======");
-  // Serial.println("White light");
-  // Serial.println(yellowLight.isRunning() ? "on" : "off");
-  // Serial.println("======");
-  // Serial.println("Heater");
-  // Serial.println(heater.isOn() ? "on" : "off");
-  // Serial.println("======");
-  // Serial.println("Ventilator");
-  // Serial.println(ventilator.isRunning() ? "on" : "off");
-  // Serial.println("======");
 
   ventilator.evaluate(now);
   Serial.println(isDay ? "is day" : "is night");
@@ -148,8 +153,9 @@ void generalFunction() {
   }
 }
 
-
 void loop() {
   generalFunction();
-  delay(1000);
+  // rtc.adjust(DateTime(2025, 4, 6, 9, 33, 0));
+
+  delay(5000);
 }
