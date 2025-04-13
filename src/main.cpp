@@ -4,7 +4,7 @@
 #include <classes/Light.h>
 #include <classes/Heater.h>
 #include <classes/GeneralActionHandler.h>
-#include "RTCManager/GlobalRTCManager.h" 
+#include "RTCManager/GlobalRTCManager.h"
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -12,7 +12,6 @@
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 RTC_DS3231 rtc;
-
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 int redLightPin = 13;
@@ -33,12 +32,8 @@ int dayStartSecond = 0;
 int dayInterval = 16;
 TimeUnit dayIntervalTimeUnit = TimeUnit::h;
 
-Light redLight(redLightPin, dayStartHour, dayStartMinute, dayStartSecond, dayInterval, dayIntervalTimeUnit);
-Light yellowLight(yellowLightPin, dayStartHour, dayStartMinute, dayStartSecond, dayInterval, dayIntervalTimeUnit);
-Ventilator ventilator(ventilatorPin, ventilatorRunFor, ventilatorRunForTimeUnit, ventilatorStopFor, ventilatorStopForTimeUnit);
-Heater heater(heaterPin, maxTemperature);
-
 GeneralActionHandler actionHandler;
+Ventilator ventilator(ventilatorPin, ventilatorRunFor, ventilatorRunForTimeUnit, ventilatorStopFor, ventilatorStopForTimeUnit);
 
 void setup()
 
@@ -80,9 +75,55 @@ void setup()
   pinMode(heaterPin, OUTPUT);
 
   ventilator.off();
-  redLight.off();
-  yellowLight.off();
-  heater.off();
+
+  redLightOff();
+  yellowLightOff();
+  heaterOff();
+}
+
+void redLightOn()
+{
+  digitalWrite(redLightPin, LOW);
+}
+
+void redLightOff()
+{
+  digitalWrite(redLightPin, HIGH);
+}
+
+void yellowLightOn()
+{
+  digitalWrite(yellowLightPin, LOW);
+}
+
+void yellowLightOff()
+{
+  digitalWrite(yellowLightPin, HIGH);
+}
+
+void heaterOn()
+{
+  digitalWrite(heaterPin, LOW);
+}
+
+void heaterOff()
+{
+  digitalWrite(heaterPin, HIGH);
+}
+
+bool isElementRunning(int pin)
+{
+  int pinState = digitalRead(pin);
+
+  // Check if the button is pressed (HIGH)
+  if (pinState == 0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 void printDate(DateTime now)
@@ -104,16 +145,17 @@ void printDate(DateTime now)
   Serial.println();
 }
 
-float getTemperature() {
+float getTemperature()
+{
   sensors.requestTemperatures();
   return sensors.getTempCByIndex(0);
 }
 
-void generalFunction() {
+void generalFunction()
+{
   DateTime now = rtcManager.getCurrentTime();
   printDate(now);
-  
-  
+
   float temp = getTemperature();
   bool isDay = actionHandler.isDay(now, dayStartHour, dayStartMinute, dayStartSecond, dayInterval, dayIntervalTimeUnit);
 
@@ -123,37 +165,31 @@ void generalFunction() {
   ventilator.evaluate(now);
   Serial.println(isDay ? "is day" : "is night");
 
-  if (isDay) {
+  if (isDay)
+  {
+    heaterOff();
 
-    if (heater.isOn()) {
-      heater.off();
+    if (temp < 30)
+    {
+      redLightOn();
+      yellowLightOff();
     }
-
-    if (temp < 30) {
-      redLight.evaluate(now);
-      if (yellowLight.isRunning()) {
-        yellowLight.off();
-      }
-    } else {
-      yellowLight.evaluate(now);
-      if (redLight.isRunning()) {
-        redLight.off();
-      }
+    else
+    {
+      yellowLightOn();
+      redLightOff();
     }
-  } else {
-    if (redLight.isRunning()) {
-      redLight.off();
-    }
-
-    if (yellowLight.isRunning()) {
-      redLight.off();
-    }
-
-    heater.evaluate(temp, isDay);
+  }
+  else
+  {
+    redLightOff();
+    redLightOff();
+    heaterOn();
   }
 }
 
-void loop() {
+void loop()
+{
   generalFunction();
   // rtc.adjust(DateTime(2025, 4, 6, 9, 33, 0));
 
