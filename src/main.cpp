@@ -1,13 +1,11 @@
 #include <Arduino.h>
 #include "RTClib.h"
-#include <classes/Ventilator.h>
-#include <classes/Light.h>
-#include <classes/Heater.h>
 #include <classes/GeneralActionHandler.h>
 #include "RTCManager/GlobalRTCManager.h"
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <TimeUnit.h>
 #define ONE_WIRE_BUS 2
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
@@ -19,11 +17,6 @@ int yellowLightPin = 12;
 int ventilatorPin = 8;
 int heaterPin = 7;
 
-int ventilatorRunFor = 1;
-TimeUnit ventilatorRunForTimeUnit = TimeUnit::m;
-int ventilatorStopFor = 10;
-TimeUnit ventilatorStopForTimeUnit = TimeUnit::m;
-
 // Define what a day is. 'Day' is when light is required. 'Night' is when dark is required.
 int maxTemperature = 30; // in celsius
 int dayStartHour = 6;
@@ -33,7 +26,6 @@ int dayInterval = 16;
 TimeUnit dayIntervalTimeUnit = TimeUnit::h;
 
 GeneralActionHandler actionHandler;
-Ventilator ventilator(ventilatorPin, ventilatorRunFor, ventilatorRunForTimeUnit, ventilatorStopFor, ventilatorStopForTimeUnit);
 
 void redLightOn()
 {
@@ -161,7 +153,6 @@ void generalFunction()
   Serial.println("Temperature");
   Serial.println(String(temp));
 
-  ventilator.evaluate(now);
   Serial.println(isDay ? "is day" : "is night");
 
   if (isDay)
@@ -182,7 +173,7 @@ void generalFunction()
   else
   {
     redLightOff();
-    redLightOff();
+    yellowLightOff();
     heaterOn();
   }
 }
@@ -192,5 +183,5 @@ void loop()
   generalFunction();
   // rtc.adjust(DateTime(2025, 4, 6, 9, 33, 0));
 
-  delay(1000);
+  delay(5000);
 }

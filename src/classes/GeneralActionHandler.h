@@ -1,6 +1,8 @@
 #ifndef GENERAL_ACTION_HANDLER_H
 #define GENERAL_ACTION_HANDLER_H
 
+#include <TimeUnit.h>
+
 class GeneralActionHandler
 {
 private:
